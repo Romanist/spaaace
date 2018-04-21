@@ -183,9 +183,9 @@ export default class SpaaaceRenderer extends Renderer {
                 sprite.y = objData.position.y;
 
                 if (objData instanceof Ship){
-                    sprite.actor.shipContainerSprite.rotation = this.gameEngine.world.objects[objId].angle * Math.PI/180;
+                    sprite.actor.shipContainerSprite.rotation = this.gameEngine.world.objects[objId].angle;
                 } else{
-                    sprite.rotation = this.gameEngine.world.objects[objId].angle * Math.PI/180;
+                    sprite.rotation = this.gameEngine.world.objects[objId].angle;
                 }
 
                 // make the wraparound seamless for objects other than the player ship

@@ -1,6 +1,6 @@
 'use strict';
 
-import SimplePhysicsEngine from 'lance/physics/SimplePhysicsEngine';
+import P2PhysicsEngine from 'lance/physics/P2PhysicsEngine';
 import GameEngine from 'lance/GameEngine';
 import Ship from './Ship';
 import Missile from './Missile';
@@ -10,12 +10,7 @@ export default class SpaaaceGameEngine extends GameEngine {
 
     constructor(options) {
         super(options);
-        this.physicsEngine = new SimplePhysicsEngine({
-            gameEngine: this,
-            collisions: {
-                type: 'brute'
-            }
-        });
+        this.physicsEngine = new P2PhysicsEngine({ gameEngine: this });
     }
 
     registerClasses(serializer){
@@ -64,14 +59,16 @@ export default class SpaaaceGameEngine extends GameEngine {
         });
 
         if (playerShip) {
-            if (inputData.input == 'up') {
-                playerShip.isAccelerating = true;
+            if (inputData.input === 'up') {
+                playerShip.physicsObj.applyImpulseLocal([0, 2]);
                 playerShip.showThrust = 5; // show thrust for next steps.
-            } else if (inputData.input == 'right') {
-                playerShip.isRotatingRight = true;
-            } else if (inputData.input == 'left') {
-                playerShip.isRotatingLeft = true;
-            } else if (inputData.input == 'space') {
+            } else if (inputData.input === 'right') {
+                playerShip.physicsObj.angularVelocity += 0.01;
+                playerShip.physicsObj.angularVelocity = Math.min(0.1, playerShip.physicsObj.angularVelocity);
+            } else if (inputData.input === 'left') {
+                playerShip.physicsObj.angularVelocity -= 0.01;
+                playerShip.physicsObj.angularVelocity = Math.max(-0.1, playerShip.physicsObj.angularVelocity);
+            } else if (inputData.input === 'space') {
                 this.makeMissile(playerShip, inputData.messageIndex);
                 this.emit('fireMissile');
             }

@@ -1,9 +1,12 @@
 import Serializer from 'lance/serialize/Serializer';
-import DynamicObject from 'lance/serialize/DynamicObject';
+import PhysicsObject2D from 'lance/serialize/PhysicalObject2D';
 import PixiRenderableComponent from 'lance/render/pixi/PixiRenderableComponent';
 import Renderer from '../client/SpaaaceRenderer';
 
-export default class Missile extends DynamicObject {
+const RADIUS = 5;
+const MASS = 1;
+
+export default class Missile extends PhysicsObject2D {
 
     constructor(gameEngine, options, props){
         super(gameEngine, options, props);
@@ -20,6 +23,13 @@ export default class Missile extends DynamicObject {
     }
 
     onAddToWorld(gameEngine) {
+
+        // create the physics body
+        this.gameEngine = gameEngine;
+        this.physicsObj = gameEngine.physicsEngine.addCircle(RADIUS, MASS);
+        this.physicsObj.position = [this.position.x, this.position.y];
+
+        // create the render object
         let renderer = Renderer.getInstance();
         if (renderer) {
             let sprite = new PIXI.Sprite(PIXI.loader.resources.missile.texture);

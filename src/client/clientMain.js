@@ -4,12 +4,12 @@ import '../../assets/sass/main.scss';
 
 // sent to both game engine and client engine
 const options = {
-    traceLevel: 1000,
-    delayInputCount: 8,
+    traceLevel: 0,
+    delayInputCount: 2,
     scheduler: 'render-schedule',
     syncOptions: {
         sync: 'extrapolate',
-        localObjBending: 0.2,
+        localObjBending: 0.8,
         remoteObjBending: 0.5
     }
 };

@@ -1,10 +1,13 @@
 import Serializer from 'lance/serialize/Serializer';
-import DynamicObject from 'lance/serialize/DynamicObject';
+import PhysicsObject2D from 'lance/serialize/PhysicalObject2D';
 import Renderer from '../client/SpaaaceRenderer';
 import Utils from './Utils';
 import ShipActor from '../client/ShipActor';
 
-export default class Ship extends DynamicObject {
+const RADIUS = 5;
+const MASS = 1;
+
+export default class Ship extends PhysicsObject2D {
 
     constructor(gameEngine, options, props){
         super(gameEngine, options, props);
@@ -14,6 +17,13 @@ export default class Ship extends DynamicObject {
     get maxSpeed() { return 3.0; }
 
     onAddToWorld(gameEngine) {
+
+        // create the physics body
+        this.gameEngine = gameEngine;
+        this.physicsObj = gameEngine.physicsEngine.addCircle(RADIUS, MASS);
+        this.physicsObj.position = [this.position.x, this.position.y];
+
+        // create the render object
         let renderer = Renderer.getInstance();
         if (renderer) {
             let shipActor = new ShipActor(renderer);
@@ -144,11 +154,13 @@ export default class Ship extends DynamicObject {
             let turnRight = this.shortestVector(this.angle, angleToTarget, 360);
 
             if (turnRight > 4) {
-                this.isRotatingRight = true;
+                this.physicsObj.angularVelocity += 0.01;
+                this.physicsObj.angularVelocity = Math.min(0.1, this.physicsObj.angularVelocity);
             } else if (turnRight < -4) {
-                this.isRotatingLeft = true;
+                this.physicsObj.angularVelocity -= 0.01;
+                this.physicsObj.angularVelocity = Math.max(-0.1, this.physicsObj.angularVelocity);
             } else {
-                this.isAccelerating = true;
+                this.physicsObj.applyImpulseLocal([0, 2]);
                 this.showThrust = 5;
             }
 
